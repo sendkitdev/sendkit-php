@@ -15,7 +15,7 @@ class Client
 
     public function __construct(
         private readonly string $apiKey,
-        private readonly string $baseUrl = 'https://api.sendkit.com',
+        private readonly string $baseUrl = 'https://api.sendkit.dev',
         ?ClientInterface $http = null,
     ) {
         $this->http = $http ?? new GuzzleClient([

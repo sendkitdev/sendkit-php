@@ -20,7 +20,7 @@ function createMockClient(array &$history, array $responses): Client
 
     $guzzle = new GuzzleClient([
         'handler' => $stack,
-        'base_uri' => 'https://api.sendkit.com',
+        'base_uri' => 'https://api.sendkit.dev',
         'headers' => [
             'Authorization' => 'Bearer test-api-key',
             'Accept' => 'application/json',
