@@ -43,6 +43,27 @@ $response = $client->emails()->sendMime(
 echo $response['id'];
 ```
 
+### Validate an Email
+
+```php
+$result = $client->validateEmail('recipient@example.com');
+
+$result['is_valid'];       // true or false
+$result['should_block'];   // true if the email should be blocked
+$result['block_reason'];   // reason for blocking, or null
+$result['evaluations'];    // detailed evaluation results
+```
+
+The `evaluations` array contains:
+- `has_valid_syntax` — whether the email has valid syntax
+- `has_valid_dns` — whether the domain has valid DNS records
+- `mailbox_exists` — whether the mailbox exists
+- `is_role_address` — whether it's a role address (e.g. info@, admin@)
+- `is_disposable` — whether it's a disposable email
+- `is_random_input` — whether it appears to be random input
+
+> **Note:** Each validation costs credits. A `SendKitException` with status 402 is thrown when credits are insufficient.
+
 ### Error Handling
 
 ```php
