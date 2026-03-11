@@ -37,7 +37,7 @@ class Emails
      */
     public function send(array $params): array
     {
-        return $this->request('POST', '/v1/emails', $params);
+        return $this->request('POST', '/emails', $params);
     }
 
     /**
@@ -49,7 +49,7 @@ class Emails
      */
     public function sendMime(string $envelopeFrom, string $envelopeTo, string $rawMessage): array
     {
-        return $this->request('POST', '/v1/emails/mime', [
+        return $this->request('POST', '/emails/mime', [
             'envelope_from' => $envelopeFrom,
             'envelope_to' => $envelopeTo,
             'raw_message' => $rawMessage,

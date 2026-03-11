@@ -61,7 +61,7 @@ it('sends a structured email', function () {
 
     $request = $history[0]['request'];
     expect($request->getMethod())->toBe('POST');
-    expect($request->getUri()->getPath())->toBe('/v1/emails');
+    expect($request->getUri()->getPath())->toBe('/emails');
 
     $body = json_decode($request->getBody()->getContents(), true);
     expect($body['from'])->toBe('sender@example.com');
@@ -86,7 +86,7 @@ it('sends a MIME email', function () {
 
     $request = $history[0]['request'];
     expect($request->getMethod())->toBe('POST');
-    expect($request->getUri()->getPath())->toBe('/v1/emails/mime');
+    expect($request->getUri()->getPath())->toBe('/emails/mime');
 
     $body = json_decode($request->getBody()->getContents(), true);
     expect($body['envelope_from'])->toBe('sender@example.com');
@@ -157,7 +157,7 @@ it('validates an email address', function () {
 
     $request = $history[0]['request'];
     expect($request->getMethod())->toBe('POST');
-    expect($request->getUri()->getPath())->toBe('/v1/emails/validate');
+    expect($request->getUri()->getPath())->toBe('/emails/validate');
 
     $body = json_decode($request->getBody()->getContents(), true);
     expect($body['email'])->toBe('user@example.com');

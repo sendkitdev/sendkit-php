@@ -38,7 +38,7 @@ class EmailValidations
     public function validate(string $email): array
     {
         try {
-            $response = $this->http->request('POST', '/v1/emails/validate', [
+            $response = $this->http->request('POST', '/emails/validate', [
                 'json' => ['email' => $email],
             ]);
 
