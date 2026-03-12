@@ -298,7 +298,27 @@ it('sends an email with reply_to', function () {
     expect($result)->toBe(['id' => 'reply-uuid']);
 
     $body = json_decode($history[0]['request']->getBody()->getContents(), true);
-    expect($body['reply_to'])->toBe('replies@example.com');
+    expect($body['reply_to'])->toBe(['replies@example.com']);
+});
+
+it('sends an email with reply_to as array', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'reply-arr-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Reply-To Array Test',
+        'html' => '<p>Test</p>',
+        'reply_to' => ['replies@example.com', 'support@example.com'],
+    ]);
+
+    expect($result)->toBe(['id' => 'reply-arr-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['reply_to'])->toBe(['replies@example.com', 'support@example.com']);
 });
 
 it('sends an email with custom headers', function () {
@@ -462,6 +482,46 @@ it('falls back to SENDKIT_API_KEY environment variable', function () {
     } finally {
         putenv('SENDKIT_API_KEY');
     }
+});
+
+it('normalizes cc from string to array', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'cc-string-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'CC String Test',
+        'html' => '<p>Test</p>',
+        'cc' => 'cc@example.com',
+    ]);
+
+    expect($result)->toBe(['id' => 'cc-string-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['cc'])->toBe(['cc@example.com']);
+});
+
+it('normalizes bcc from string to array', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'bcc-string-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'BCC String Test',
+        'html' => '<p>Test</p>',
+        'bcc' => 'bcc@example.com',
+    ]);
+
+    expect($result)->toBe(['id' => 'bcc-string-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['bcc'])->toBe(['bcc@example.com']);
 });
 
 it('prefers explicit API key over environment variable', function () {

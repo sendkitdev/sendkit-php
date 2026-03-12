@@ -23,9 +23,9 @@ class Emails
      *     subject: string,
      *     html?: string,
      *     text?: string,
-     *     cc?: string[],
-     *     bcc?: string[],
-     *     reply_to?: string,
+     *     cc?: string|string[],
+     *     bcc?: string|string[],
+     *     reply_to?: string|string[],
      *     headers?: array<string, string>,
      *     tags?: array<int, array{name: string, value: string}>,
      *     scheduled_at?: string,
@@ -38,6 +38,18 @@ class Emails
     public function send(array $params): array
     {
         $params = array_filter($params, fn ($v) => $v !== null);
+
+        if (isset($params['cc']) && is_string($params['cc'])) {
+            $params['cc'] = [$params['cc']];
+        }
+
+        if (isset($params['bcc']) && is_string($params['bcc'])) {
+            $params['bcc'] = [$params['bcc']];
+        }
+
+        if (isset($params['reply_to']) && is_string($params['reply_to'])) {
+            $params['reply_to'] = [$params['reply_to']];
+        }
 
         return $this->request('POST', '/emails', $params);
     }
