@@ -199,3 +199,295 @@ it('throws SendKitException when validation credits are insufficient', function 
 
     $client->validateEmail('user@example.com');
 })->throws(SendKitException::class, 'Insufficient validation credits.');
+
+it('sends an email to multiple recipients', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'multi-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => ['alice@example.com', 'bob@example.com'],
+        'subject' => 'Multi Recipient',
+        'html' => '<p>Hello all</p>',
+    ]);
+
+    expect($result)->toBe(['id' => 'multi-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['to'])->toBe(['alice@example.com', 'bob@example.com']);
+});
+
+it('sends an email with display name format in to field', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'display-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'Sender <sender@example.com>',
+        'to' => 'Alice <alice@example.com>',
+        'subject' => 'Display Name Test',
+        'html' => '<p>Hi Alice</p>',
+    ]);
+
+    expect($result)->toBe(['id' => 'display-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['to'])->toBe('Alice <alice@example.com>');
+    expect($body['from'])->toBe('Sender <sender@example.com>');
+});
+
+it('sends an email with text body', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'text-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Plain Text',
+        'text' => 'Hello, plain text!',
+    ]);
+
+    expect($result)->toBe(['id' => 'text-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['text'])->toBe('Hello, plain text!');
+    expect($body)->not->toHaveKey('html');
+});
+
+it('sends an email with cc and bcc', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'cc-bcc-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'CC/BCC Test',
+        'html' => '<p>Test</p>',
+        'cc' => ['cc1@example.com', 'cc2@example.com'],
+        'bcc' => ['bcc1@example.com'],
+    ]);
+
+    expect($result)->toBe(['id' => 'cc-bcc-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['cc'])->toBe(['cc1@example.com', 'cc2@example.com']);
+    expect($body['bcc'])->toBe(['bcc1@example.com']);
+});
+
+it('sends an email with reply_to', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'reply-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Reply-To Test',
+        'html' => '<p>Test</p>',
+        'reply_to' => 'replies@example.com',
+    ]);
+
+    expect($result)->toBe(['id' => 'reply-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['reply_to'])->toBe('replies@example.com');
+});
+
+it('sends an email with custom headers', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'headers-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Headers Test',
+        'html' => '<p>Test</p>',
+        'headers' => [
+            'X-Custom-Header' => 'custom-value',
+            'X-Another' => 'another-value',
+        ],
+    ]);
+
+    expect($result)->toBe(['id' => 'headers-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['headers'])->toBe([
+        'X-Custom-Header' => 'custom-value',
+        'X-Another' => 'another-value',
+    ]);
+});
+
+it('sends an email with tags in name-value format', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'tags-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Tags Test',
+        'html' => '<p>Test</p>',
+        'tags' => [
+            ['name' => 'category', 'value' => 'transactional'],
+            ['name' => 'priority', 'value' => 'high'],
+        ],
+    ]);
+
+    expect($result)->toBe(['id' => 'tags-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['tags'])->toBe([
+        ['name' => 'category', 'value' => 'transactional'],
+        ['name' => 'priority', 'value' => 'high'],
+    ]);
+});
+
+it('sends an email with scheduled_at', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'scheduled-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Scheduled Test',
+        'html' => '<p>Test</p>',
+        'scheduled_at' => '2026-12-25T10:00:00Z',
+    ]);
+
+    expect($result)->toBe(['id' => 'scheduled-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['scheduled_at'])->toBe('2026-12-25T10:00:00Z');
+});
+
+it('sends an email with attachments', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'attach-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Attachment Test',
+        'html' => '<p>See attached</p>',
+        'attachments' => [
+            [
+                'filename' => 'report.pdf',
+                'content' => base64_encode('fake-pdf-content'),
+                'content_type' => 'application/pdf',
+            ],
+        ],
+    ]);
+
+    expect($result)->toBe(['id' => 'attach-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body['attachments'])->toHaveCount(1);
+    expect($body['attachments'][0]['filename'])->toBe('report.pdf');
+    expect($body['attachments'][0]['content_type'])->toBe('application/pdf');
+});
+
+it('omits null fields from the JSON payload', function () {
+    $history = [];
+    $client = createMockClient($history, [
+        new Response(200, [], json_encode(['id' => 'null-filter-uuid'])),
+    ]);
+
+    $result = $client->emails()->send([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Null Filter Test',
+        'html' => '<p>Test</p>',
+        'cc' => null,
+        'bcc' => null,
+        'reply_to' => null,
+        'headers' => null,
+        'tags' => null,
+        'scheduled_at' => null,
+        'attachments' => null,
+    ]);
+
+    expect($result)->toBe(['id' => 'null-filter-uuid']);
+
+    $body = json_decode($history[0]['request']->getBody()->getContents(), true);
+    expect($body)->toBe([
+        'from' => 'sender@example.com',
+        'to' => 'recipient@example.com',
+        'subject' => 'Null Filter Test',
+        'html' => '<p>Test</p>',
+    ]);
+});
+
+it('throws SendKitException with missing_api_key name when API key is empty', function () {
+    new Client('');
+})->throws(SendKitException::class, 'The SendKit API key is not set.');
+
+it('throws SendKitException with missing_api_key name via static factory', function () {
+    SendKit::client('');
+})->throws(SendKitException::class, 'The SendKit API key is not set.');
+
+it('has the missing_api_key name on the exception', function () {
+    try {
+        new Client('');
+    } catch (SendKitException $e) {
+        expect($e->name)->toBe('missing_api_key');
+        expect($e->status)->toBe(0);
+
+        return;
+    }
+
+    test()->fail('Expected SendKitException was not thrown.');
+});
+
+it('falls back to SENDKIT_API_KEY environment variable', function () {
+    putenv('SENDKIT_API_KEY=env-api-key');
+
+    try {
+        $client = new Client('');
+        expect($client)->toBeInstanceOf(Client::class);
+    } finally {
+        putenv('SENDKIT_API_KEY');
+    }
+});
+
+it('prefers explicit API key over environment variable', function () {
+    putenv('SENDKIT_API_KEY=env-key');
+
+    try {
+        $history = [];
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new Response(200, [], json_encode(['id' => 'explicit-uuid'])),
+        ]);
+        $stack = \GuzzleHttp\HandlerStack::create($mock);
+        $stack->push(\GuzzleHttp\Middleware::history($history));
+
+        $guzzle = new \GuzzleHttp\Client([
+            'handler' => $stack,
+            'base_uri' => 'https://api.sendkit.dev',
+            'headers' => [
+                'Authorization' => 'Bearer explicit-key',
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $client = new Client('explicit-key', http: $guzzle);
+        expect($client)->toBeInstanceOf(Client::class);
+    } finally {
+        putenv('SENDKIT_API_KEY');
+    }
+});

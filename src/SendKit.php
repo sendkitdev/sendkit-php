@@ -6,7 +6,10 @@ namespace SendKit;
 
 class SendKit
 {
-    public static function client(string $apiKey, string $baseUrl = 'https://api.sendkit.dev'): Client
+    /**
+     * @throws Exceptions\SendKitException
+     */
+    public static function client(string $apiKey = '', string $baseUrl = 'https://api.sendkit.dev'): Client
     {
         return new Client($apiKey, $baseUrl);
     }

@@ -11,6 +11,7 @@ class SendKitException extends Exception
     public function __construct(
         string $message,
         public readonly int $status,
+        public readonly ?string $name = null,
     ) {
         parent::__construct($message, $status);
     }

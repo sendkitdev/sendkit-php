@@ -23,11 +23,11 @@ class Emails
      *     subject: string,
      *     html?: string,
      *     text?: string,
-     *     cc?: string|string[],
-     *     bcc?: string|string[],
+     *     cc?: string[],
+     *     bcc?: string[],
      *     reply_to?: string,
      *     headers?: array<string, string>,
-     *     tags?: string[],
+     *     tags?: array<int, array{name: string, value: string}>,
      *     scheduled_at?: string,
      *     attachments?: array<int, array{filename: string, content: string, content_type?: string}>,
      * }  $params
@@ -37,6 +37,8 @@ class Emails
      */
     public function send(array $params): array
     {
+        $params = array_filter($params, fn ($v) => $v !== null);
+
         return $this->request('POST', '/emails', $params);
     }
 

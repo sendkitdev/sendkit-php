@@ -6,20 +6,34 @@ namespace SendKit;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
+use SendKit\Exceptions\SendKitException;
 
 class Client
 {
     private readonly ClientInterface $http;
 
+    private readonly string $apiKey;
+
     private ?Emails $emails = null;
 
     private ?EmailValidations $emailValidations = null;
 
+    /**
+     * @throws SendKitException
+     */
     public function __construct(
-        private readonly string $apiKey,
+        string $apiKey = '',
         private readonly string $baseUrl = 'https://api.sendkit.dev',
         ?ClientInterface $http = null,
     ) {
+        $resolvedKey = $apiKey !== '' ? $apiKey : (getenv('SENDKIT_API_KEY') ?: '');
+
+        if ($resolvedKey === '') {
+            throw new SendKitException('The SendKit API key is not set. Provide it via the constructor or the SENDKIT_API_KEY environment variable.', 0, 'missing_api_key');
+        }
+
+        $this->apiKey = $resolvedKey;
+
         $this->http = $http ?? new GuzzleClient([
             'base_uri' => $this->baseUrl,
             'headers' => [
