@@ -569,18 +569,16 @@ it('creates a contact', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(201, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-123',
-                'email' => 'john@example.com',
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'user_id' => null,
-                'unsubscribed' => false,
-                'properties' => [],
-                'lists' => [],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
-            ],
+            'id' => 'contact-uuid-123',
+            'email' => 'john@example.com',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'user_id' => null,
+            'unsubscribed' => false,
+            'properties' => [],
+            'lists' => [],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
@@ -590,10 +588,10 @@ it('creates a contact', function () {
         'last_name' => 'Doe',
     ]);
 
-    expect($result['data']['id'])->toBe('contact-uuid-123');
-    expect($result['data']['email'])->toBe('john@example.com');
-    expect($result['data']['properties'])->toBe([]);
-    expect($result['data']['lists'])->toBe([]);
+    expect($result['id'])->toBe('contact-uuid-123');
+    expect($result['email'])->toBe('john@example.com');
+    expect($result['properties'])->toBe([]);
+    expect($result['lists'])->toBe([]);
     expect($history)->toHaveCount(1);
 
     $request = $history[0]['request'];
@@ -610,18 +608,16 @@ it('upserts an existing contact and returns 200', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(200, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-123',
-                'email' => 'john@example.com',
-                'first_name' => 'Johnny',
-                'last_name' => 'Doe',
-                'user_id' => null,
-                'unsubscribed' => false,
-                'properties' => ['COMPANY' => 'Acme'],
-                'lists' => [],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 13:00:00',
-            ],
+            'id' => 'contact-uuid-123',
+            'email' => 'john@example.com',
+            'first_name' => 'Johnny',
+            'last_name' => 'Doe',
+            'user_id' => null,
+            'unsubscribed' => false,
+            'properties' => ['COMPANY' => 'Acme'],
+            'lists' => [],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 13:00:00',
         ])),
     ]);
 
@@ -630,8 +626,8 @@ it('upserts an existing contact and returns 200', function () {
         'first_name' => 'Johnny',
     ]);
 
-    expect($result['data']['first_name'])->toBe('Johnny');
-    expect($result['data']['properties']['COMPANY'])->toBe('Acme');
+    expect($result['first_name'])->toBe('Johnny');
+    expect($result['properties']['COMPANY'])->toBe('Acme');
 
     $request = $history[0]['request'];
     expect($request->getMethod())->toBe('POST');
@@ -642,21 +638,19 @@ it('creates a contact with list_ids and properties', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(201, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-456',
-                'email' => 'jane@example.com',
-                'first_name' => 'Jane',
-                'last_name' => null,
-                'user_id' => 'user-123',
-                'unsubscribed' => false,
-                'properties' => ['COMPANY' => 'Acme'],
-                'lists' => [
-                    ['id' => 'list-1', 'name' => 'Newsletter', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
-                    ['id' => 'list-2', 'name' => 'Updates', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
-                ],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
+            'id' => 'contact-uuid-456',
+            'email' => 'jane@example.com',
+            'first_name' => 'Jane',
+            'last_name' => null,
+            'user_id' => 'user-123',
+            'unsubscribed' => false,
+            'properties' => ['COMPANY' => 'Acme'],
+            'lists' => [
+                ['id' => 'list-1', 'name' => 'Newsletter', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
+                ['id' => 'list-2', 'name' => 'Updates', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
             ],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
@@ -668,9 +662,9 @@ it('creates a contact with list_ids and properties', function () {
         'properties' => ['COMPANY' => 'Acme'],
     ]);
 
-    expect($result['data']['id'])->toBe('contact-uuid-456');
-    expect($result['data']['properties']['COMPANY'])->toBe('Acme');
-    expect($result['data']['lists'])->toHaveCount(2);
+    expect($result['id'])->toBe('contact-uuid-456');
+    expect($result['properties']['COMPANY'])->toBe('Acme');
+    expect($result['lists'])->toHaveCount(2);
 
     $body = json_decode($history[0]['request']->getBody()->getContents(), true);
     expect($body['list_ids'])->toBe(['list-1', 'list-2']);
@@ -681,18 +675,16 @@ it('omits null fields when creating a contact', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(201, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid',
-                'email' => 'test@example.com',
-                'first_name' => null,
-                'last_name' => null,
-                'user_id' => null,
-                'unsubscribed' => false,
-                'properties' => [],
-                'lists' => [],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
-            ],
+            'id' => 'contact-uuid',
+            'email' => 'test@example.com',
+            'first_name' => null,
+            'last_name' => null,
+            'user_id' => null,
+            'unsubscribed' => false,
+            'properties' => [],
+            'lists' => [],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
@@ -810,30 +802,28 @@ it('gets a single contact', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(200, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-123',
-                'email' => 'john@example.com',
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'user_id' => null,
-                'unsubscribed' => false,
-                'properties' => ['COMPANY' => 'Acme'],
-                'lists' => [
-                    ['id' => 'list-1', 'name' => 'Newsletter', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
-                ],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
+            'id' => 'contact-uuid-123',
+            'email' => 'john@example.com',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'user_id' => null,
+            'unsubscribed' => false,
+            'properties' => ['COMPANY' => 'Acme'],
+            'lists' => [
+                ['id' => 'list-1', 'name' => 'Newsletter', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
             ],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
     $result = $client->contacts()->get('contact-uuid-123');
 
-    expect($result['data']['id'])->toBe('contact-uuid-123');
-    expect($result['data']['email'])->toBe('john@example.com');
-    expect($result['data']['properties']['COMPANY'])->toBe('Acme');
-    expect($result['data']['lists'])->toHaveCount(1);
-    expect($result['data']['lists'][0]['name'])->toBe('Newsletter');
+    expect($result['id'])->toBe('contact-uuid-123');
+    expect($result['email'])->toBe('john@example.com');
+    expect($result['properties']['COMPANY'])->toBe('Acme');
+    expect($result['lists'])->toHaveCount(1);
+    expect($result['lists'][0]['name'])->toBe('Newsletter');
     expect($history)->toHaveCount(1);
 
     $request = $history[0]['request'];
@@ -845,18 +835,16 @@ it('updates a contact', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(200, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-123',
-                'email' => 'john@example.com',
-                'first_name' => 'Johnny',
-                'last_name' => 'Doe',
-                'user_id' => null,
-                'unsubscribed' => false,
-                'properties' => [],
-                'lists' => [],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 13:00:00',
-            ],
+            'id' => 'contact-uuid-123',
+            'email' => 'john@example.com',
+            'first_name' => 'Johnny',
+            'last_name' => 'Doe',
+            'user_id' => null,
+            'unsubscribed' => false,
+            'properties' => [],
+            'lists' => [],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 13:00:00',
         ])),
     ]);
 
@@ -864,7 +852,7 @@ it('updates a contact', function () {
         'first_name' => 'Johnny',
     ]);
 
-    expect($result['data']['first_name'])->toBe('Johnny');
+    expect($result['first_name'])->toBe('Johnny');
     expect($history)->toHaveCount(1);
 
     $request = $history[0]['request'];
@@ -879,18 +867,16 @@ it('updates a contact with unsubscribed flag', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(200, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-123',
-                'email' => 'john@example.com',
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'user_id' => null,
-                'unsubscribed' => true,
-                'properties' => [],
-                'lists' => [],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 13:00:00',
-            ],
+            'id' => 'contact-uuid-123',
+            'email' => 'john@example.com',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'user_id' => null,
+            'unsubscribed' => true,
+            'properties' => [],
+            'lists' => [],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 13:00:00',
         ])),
     ]);
 
@@ -898,7 +884,7 @@ it('updates a contact with unsubscribed flag', function () {
         'unsubscribed' => true,
     ]);
 
-    expect($result['data']['unsubscribed'])->toBeTrue();
+    expect($result['unsubscribed'])->toBeTrue();
 
     $body = json_decode($history[0]['request']->getBody()->getContents(), true);
     expect($body['unsubscribed'])->toBeTrue();
@@ -923,29 +909,27 @@ it('adds a contact to lists', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(200, [], json_encode([
-            'data' => [
-                'id' => 'contact-uuid-123',
-                'email' => 'john@example.com',
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'user_id' => null,
-                'unsubscribed' => false,
-                'properties' => [],
-                'lists' => [
-                    ['id' => 'list-1', 'name' => 'Newsletter', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
-                    ['id' => 'list-2', 'name' => 'Updates', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
-                ],
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
+            'id' => 'contact-uuid-123',
+            'email' => 'john@example.com',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'user_id' => null,
+            'unsubscribed' => false,
+            'properties' => [],
+            'lists' => [
+                ['id' => 'list-1', 'name' => 'Newsletter', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
+                ['id' => 'list-2', 'name' => 'Updates', 'created_at' => '2026-03-14 12:00:00', 'updated_at' => '2026-03-14 12:00:00'],
             ],
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
     $result = $client->contacts()->addToLists('contact-uuid-123', ['list-1', 'list-2']);
 
-    expect($result['data']['lists'])->toHaveCount(2);
-    expect($result['data']['lists'][0]['name'])->toBe('Newsletter');
-    expect($result['data']['lists'][1]['name'])->toBe('Updates');
+    expect($result['lists'])->toHaveCount(2);
+    expect($result['lists'][0]['name'])->toBe('Newsletter');
+    expect($result['lists'][1]['name'])->toBe('Updates');
     expect($history)->toHaveCount(1);
 
     $request = $history[0]['request'];
@@ -1074,14 +1058,12 @@ it('creates a contact property', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(201, [], json_encode([
-            'data' => [
-                'id' => 'prop-uuid-123',
-                'key' => 'company',
-                'type' => 'string',
-                'fallback_value' => 'N/A',
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
-            ],
+            'id' => 'prop-uuid-123',
+            'key' => 'company',
+            'type' => 'string',
+            'fallback_value' => 'N/A',
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
@@ -1091,10 +1073,10 @@ it('creates a contact property', function () {
         'fallback_value' => 'N/A',
     ]);
 
-    expect($result['data']['id'])->toBe('prop-uuid-123');
-    expect($result['data']['key'])->toBe('company');
-    expect($result['data']['type'])->toBe('string');
-    expect($result['data']['fallback_value'])->toBe('N/A');
+    expect($result['id'])->toBe('prop-uuid-123');
+    expect($result['key'])->toBe('company');
+    expect($result['type'])->toBe('string');
+    expect($result['fallback_value'])->toBe('N/A');
     expect($history)->toHaveCount(1);
 
     $request = $history[0]['request'];
@@ -1111,14 +1093,12 @@ it('creates a contact property without fallback_value', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(201, [], json_encode([
-            'data' => [
-                'id' => 'prop-uuid-456',
-                'key' => 'age',
-                'type' => 'number',
-                'fallback_value' => null,
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
-            ],
+            'id' => 'prop-uuid-456',
+            'key' => 'age',
+            'type' => 'number',
+            'fallback_value' => null,
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
@@ -1128,9 +1108,9 @@ it('creates a contact property without fallback_value', function () {
         'fallback_value' => null,
     ]);
 
-    expect($result['data']['key'])->toBe('age');
-    expect($result['data']['type'])->toBe('number');
-    expect($result['data']['fallback_value'])->toBeNull();
+    expect($result['key'])->toBe('age');
+    expect($result['type'])->toBe('number');
+    expect($result['fallback_value'])->toBeNull();
 
     $body = json_decode($history[0]['request']->getBody()->getContents(), true);
     expect($body)->toBe(['key' => 'age', 'type' => 'number']);
@@ -1140,14 +1120,12 @@ it('creates a contact property with date type', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(201, [], json_encode([
-            'data' => [
-                'id' => 'prop-uuid-789',
-                'key' => 'birthday',
-                'type' => 'date',
-                'fallback_value' => null,
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 12:00:00',
-            ],
+            'id' => 'prop-uuid-789',
+            'key' => 'birthday',
+            'type' => 'date',
+            'fallback_value' => null,
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 12:00:00',
         ])),
     ]);
 
@@ -1156,7 +1134,7 @@ it('creates a contact property with date type', function () {
         'type' => 'date',
     ]);
 
-    expect($result['data']['type'])->toBe('date');
+    expect($result['type'])->toBe('date');
 
     $body = json_decode($history[0]['request']->getBody()->getContents(), true);
     expect($body['type'])->toBe('date');
@@ -1253,14 +1231,12 @@ it('updates a contact property', function () {
     $history = [];
     $client = createMockClient($history, [
         new Response(200, [], json_encode([
-            'data' => [
-                'id' => 'prop-uuid-123',
-                'key' => 'organization',
-                'type' => 'string',
-                'fallback_value' => 'Unknown',
-                'created_at' => '2026-03-14 12:00:00',
-                'updated_at' => '2026-03-14 13:00:00',
-            ],
+            'id' => 'prop-uuid-123',
+            'key' => 'organization',
+            'type' => 'string',
+            'fallback_value' => 'Unknown',
+            'created_at' => '2026-03-14 12:00:00',
+            'updated_at' => '2026-03-14 13:00:00',
         ])),
     ]);
 
@@ -1269,8 +1245,8 @@ it('updates a contact property', function () {
         'fallback_value' => 'Unknown',
     ]);
 
-    expect($result['data']['key'])->toBe('organization');
-    expect($result['data']['fallback_value'])->toBe('Unknown');
+    expect($result['key'])->toBe('organization');
+    expect($result['fallback_value'])->toBe('Unknown');
     expect($history)->toHaveCount(1);
 
     $request = $history[0]['request'];

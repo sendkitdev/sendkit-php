@@ -20,7 +20,7 @@ class Contacts extends Service
      *     list_ids?: string[],
      *     properties?: array<string, string|null>,
      * }  $params
-     * @return array{data: array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}}
+     * @return array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}
      *
      * @throws SendKitException
      */
@@ -47,7 +47,7 @@ class Contacts extends Service
     /**
      * Get a single contact.
      *
-     * @return array{data: array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}}
+     * @return array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}
      *
      * @throws SendKitException
      */
@@ -68,7 +68,7 @@ class Contacts extends Service
      *     list_ids?: string[],
      *     properties?: array<string, string|null>,
      * }  $params
-     * @return array{data: array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}}
+     * @return array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}
      *
      * @throws SendKitException
      */
@@ -93,7 +93,7 @@ class Contacts extends Service
      * Add a contact to one or more lists.
      *
      * @param  string[]  $listIds
-     * @return array{data: array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}}
+     * @return array{id: string, email: string, first_name: string|null, last_name: string|null, user_id: string|null, unsubscribed: bool, properties: array<string, string>, lists: array<int, array{id: string, name: string, created_at: string, updated_at: string}>, created_at: string, updated_at: string}
      *
      * @throws SendKitException
      */

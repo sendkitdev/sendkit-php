@@ -57,7 +57,7 @@ $contact = $client->contacts()->create([
     'properties' => ['COMPANY' => 'Acme'],
 ]);
 
-echo $contact['data']['id'];
+echo $contact['id'];
 ```
 
 If a contact with that email already exists, it will be updated instead.
@@ -123,7 +123,7 @@ $property = $client->contactProperties()->create([
     'fallback_value' => 'N/A',    // optional
 ]);
 
-echo $property['data']['id'];
+echo $property['id'];
 ```
 
 #### List Properties

@@ -16,7 +16,7 @@ class ContactProperties extends Service
      *     type: string,
      *     fallback_value?: string|null,
      * }  $params
-     * @return array{data: array{id: string, key: string, type: string, fallback_value: string|null, created_at: string, updated_at: string}}
+     * @return array{id: string, key: string, type: string, fallback_value: string|null, created_at: string, updated_at: string}
      *
      * @throws SendKitException
      */
@@ -48,7 +48,7 @@ class ContactProperties extends Service
      *     type?: string,
      *     fallback_value?: string|null,
      * }  $params
-     * @return array{data: array{id: string, key: string, type: string, fallback_value: string|null, created_at: string, updated_at: string}}
+     * @return array{id: string, key: string, type: string, fallback_value: string|null, created_at: string, updated_at: string}
      *
      * @throws SendKitException
      */
