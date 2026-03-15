@@ -16,6 +16,10 @@ class Client
 
     private ?Emails $emails = null;
 
+    private ?Contacts $contacts = null;
+
+    private ?ContactProperties $contactProperties = null;
+
     private ?EmailValidations $emailValidations = null;
 
     /**
@@ -42,6 +46,16 @@ class Client
                 'Content-Type' => 'application/json',
             ],
         ]);
+    }
+
+    public function contacts(): Contacts
+    {
+        return $this->contacts ??= new Contacts($this->http);
+    }
+
+    public function contactProperties(): ContactProperties
+    {
+        return $this->contactProperties ??= new ContactProperties($this->http);
     }
 
     public function emails(): Emails

@@ -2,23 +2,31 @@
 
 ## Project Overview
 
-Pure PHP SDK for the SendKit email API. No framework dependencies — just Guzzle.
+Pure PHP SDK for the SendKit API. No framework dependencies — just Guzzle.
 
 ## Architecture
 
 ```
 src/
 ├── SendKit.php              # Static factory: SendKit::client('key')
-├── Client.php               # Main client, holds Guzzle, exposes ->emails()
+├── Client.php               # Main client, holds Guzzle, exposes service accessors
+├── Service.php              # Abstract base class with shared HTTP request logic
+├── Contacts.php             # Contacts service (CRUD, list management)
+├── ContactProperties.php    # Contact properties service (CRUD)
 ├── Emails.php               # Email service (send, sendMime)
+├── EmailValidations.php     # Email validation service
 └── Exceptions/
     └── SendKitException.php # API error wrapper (message + HTTP status)
 ```
 
 - `SendKit::client()` creates a `Client` with configured Guzzle instance
 - `Client` accepts optional `ClientInterface` for testing
-- `Emails::send()` → `POST /v1/emails` (structured params)
-- `Emails::sendMime()` → `POST /v1/emails/mime` (envelope + raw MIME)
+- All service classes extend `Service` which provides the shared `request()` method
+- `Contacts` → `/contacts` endpoints (CRUD + list management)
+- `ContactProperties` → `/properties` endpoints (CRUD)
+- `Emails::send()` → `POST /emails` (structured params)
+- `Emails::sendMime()` → `POST /emails/mime` (envelope + raw MIME)
+- `EmailValidations::validate()` → `POST /emails/validate`
 
 ## Dependencies
 

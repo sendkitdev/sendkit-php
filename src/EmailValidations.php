@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace SendKit;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
 use SendKit\Exceptions\SendKitException;
 
-class EmailValidations
+class EmailValidations extends Service
 {
-    public function __construct(
-        private readonly ClientInterface $http,
-    ) {}
-
     /**
      * Validate an email address.
      *
@@ -37,20 +31,6 @@ class EmailValidations
      */
     public function validate(string $email): array
     {
-        try {
-            $response = $this->http->request('POST', '/emails/validate', [
-                'json' => ['email' => $email],
-            ]);
-
-            /** @var array{email: string, is_valid: bool, evaluations: array, should_block: bool, block_reason: string|null, validated_at: string} */
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (RequestException $e) {
-            $status = $e->getResponse()?->getStatusCode() ?? 500;
-            $body = $e->getResponse()?->getBody()->getContents();
-            $decoded = $body ? json_decode($body, true) : null;
-            $message = $decoded['message'] ?? $e->getMessage();
-
-            throw new SendKitException($message, $status);
-        }
+        return $this->request('POST', '/emails/validate', ['email' => $email]);
     }
 }

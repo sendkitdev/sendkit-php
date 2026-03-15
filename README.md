@@ -1,6 +1,6 @@
 # SendKit PHP SDK
 
-Official PHP SDK for the [SendKit](https://sendkit.com) email API.
+Official PHP SDK for the [SendKit](https://sendkit.dev) email API.
 
 ## Installation
 
@@ -42,6 +42,113 @@ $response = $client->emails()->sendMime(
 
 echo $response['id'];
 ```
+
+### Contacts
+
+#### Create or Update a Contact (Upsert)
+
+```php
+$contact = $client->contacts()->create([
+    'email' => 'john@example.com',
+    'first_name' => 'John',
+    'last_name' => 'Doe',
+    'unsubscribed' => false,
+    'list_ids' => ['list-uuid-1', 'list-uuid-2'],
+    'properties' => ['COMPANY' => 'Acme'],
+]);
+
+echo $contact['data']['id'];
+```
+
+If a contact with that email already exists, it will be updated instead.
+
+#### List Contacts
+
+```php
+$contacts = $client->contacts()->list();
+$contacts = $client->contacts()->list(['page' => 2]);
+
+$contacts['data'];           // array of contacts
+$contacts['meta']['total'];  // total count
+```
+
+#### Get a Contact
+
+```php
+$contact = $client->contacts()->get('contact-uuid');
+```
+
+#### Update a Contact
+
+```php
+$contact = $client->contacts()->update('contact-uuid', [
+    'first_name' => 'Johnny',
+    'unsubscribed' => true,
+]);
+```
+
+#### Delete a Contact
+
+```php
+$client->contacts()->delete('contact-uuid');
+```
+
+#### Add a Contact to Lists
+
+```php
+$contact = $client->contacts()->addToLists('contact-uuid', ['list-uuid-1', 'list-uuid-2']);
+```
+
+#### List a Contact's Lists
+
+```php
+$lists = $client->contacts()->listLists('contact-uuid');
+$lists = $client->contacts()->listLists('contact-uuid', ['page' => 2]);
+```
+
+#### Remove a Contact from a List
+
+```php
+$client->contacts()->removeFromList('contact-uuid', 'list-uuid');
+```
+
+### Contact Properties
+
+#### Create a Property
+
+```php
+$property = $client->contactProperties()->create([
+    'key' => 'company',
+    'type' => 'string',           // "string", "number", or "date"
+    'fallback_value' => 'N/A',    // optional
+]);
+
+echo $property['data']['id'];
+```
+
+#### List Properties
+
+```php
+$properties = $client->contactProperties()->list();
+$properties = $client->contactProperties()->list(['page' => 2]);
+```
+
+#### Update a Property
+
+```php
+$property = $client->contactProperties()->update('property-uuid', [
+    'key' => 'organization',
+    'fallback_value' => 'Unknown',
+]);
+```
+
+#### Delete a Property
+
+```php
+$client->contactProperties()->delete('property-uuid');
+```
+
+> **Note:** A `SendKitException` with status 409 is thrown if the property is used in segment filters.
 
 ### Validate an Email
 
