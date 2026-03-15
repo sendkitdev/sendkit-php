@@ -13,14 +13,14 @@ class EmailValidations extends Service
      *
      * @return array{
      *     email: string,
-     *     is_valid: bool,
+     *     is_valid: string,
      *     evaluations: array{
-     *         has_valid_syntax: bool,
-     *         has_valid_dns: bool,
-     *         mailbox_exists: bool,
-     *         is_role_address: bool,
-     *         is_disposable: bool,
-     *         is_random_input: bool,
+     *         has_valid_syntax: string,
+     *         has_valid_dns: string,
+     *         mailbox_exists: string,
+     *         is_role_address: string,
+     *         is_disposable: string,
+     *         is_random_input: string,
      *     },
      *     should_block: bool,
      *     block_reason: string|null,

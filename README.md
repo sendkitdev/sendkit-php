@@ -155,7 +155,7 @@ $client->contactProperties()->delete('property-uuid');
 ```php
 $result = $client->validateEmail('recipient@example.com');
 
-$result['is_valid'];       // true or false
+$result['is_valid'];       // "HIGH" or "LOW"
 $result['should_block'];   // true if the email should be blocked
 $result['block_reason'];   // reason for blocking, or null
 $result['evaluations'];    // detailed evaluation results
