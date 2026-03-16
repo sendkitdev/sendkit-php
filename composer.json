@@ -1,5 +1,6 @@
 {
     "name": "sendkit/sendkit-php",
+    "version": "1.1.2",
     "description": "PHP SDK for the SendKit email API",
     "keywords": ["sendkit", "email", "api", "sdk"],
     "license": "MIT",
